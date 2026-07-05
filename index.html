@@ -241,7 +241,7 @@ body {
 
 <div class="page-header">
   <div class="page-header-left">
-    <div class="page-brand">DC Prep</div>
+    <div class="page-brand">DC Prep Operations</div>
     <div class="page-title">Operations Dashboard</div>
     <div class="page-meta" id="meta-line">Loading…</div>
   </div>
@@ -360,7 +360,7 @@ function renderDrills(data) {
       statuses.forEach((status, mi) => {
         const td = tr.insertCell();
         const mn = months[mi].num;
-        const yr = mn >= 8 ? data.syStart : data.syStart + 1;
+        const syStart = data.syStart || new Date().getFullYear(); const yr = mn >= 8 ? syStart : syStart + 1;
         const isPast = new Date(yr, mn-1, 1) < today;
         if (!isPast) {
           td.innerHTML = '<span class="dot dot-future"></span>';
@@ -534,7 +534,7 @@ function renderCustodial(data, window) {
   trendsBody.style.gridTemplateColumns = 'repeat(3,1fr)';
   trendsBody.style.gap = '16px';
 
-  data.clusters.forEach(cl => {
+  data.forEach(cl => {
     const box = el('div');
     const curr = cl.currentPct;
     const prev = cl.priorPct;
@@ -561,7 +561,7 @@ function renderCustodial(data, window) {
   secTitle2.style.marginTop = '24px';
   container.appendChild(secTitle2);
 
-  data.clusters.forEach((cl, ci) => {
+  data.forEach((cl, ci) => {
     if (ci > 0) container.appendChild(el('hr','cluster-divider'));
     const block = el('div','cluster-block');
     const curr = cl.currentPct; const prev = cl.priorPct;
