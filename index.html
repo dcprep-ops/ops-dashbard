@@ -397,8 +397,16 @@ function renderDrills(data) {
           <div class="drill-card-body"><div class="no-drill">No drill logged</div></div>`;
       } else {
         const durClass = drill.under10 ? 'ok' : 'warn';
-        const flagHtml = drill.flags
-          ? `<div class="stat-line"><span class="stat-key">Flags</span><span class="stat-val flag">${drill.flags}</span></div>`
+        const flagLines = drill.flags
+          ? drill.flags.split(';').map(f => f.trim()).filter(f => f)
+          : [];
+        const flagHtml = flagLines.length
+          ? `<div class="stat-line" style="align-items:flex-start">
+               <span class="stat-key">Flags</span>
+               <span class="stat-val flag" style="display:flex;flex-direction:column;gap:3px">
+                 ${flagLines.map(f => `<span>${f}</span>`).join('')}
+               </span>
+             </div>`
           : `<div class="stat-line"><span class="stat-key">Flags</span><span class="stat-val">None</span></div>`;
         div.innerHTML = `
           <div class="drill-card-header">
@@ -447,48 +455,66 @@ function renderArrival(data, window) {
         sessDiv.appendChild(warn);
       } else {
         const isLowData = curr.n < 5;
-        const cols = el('div','period-cols');
-        const priorBox = el('div','period-box');
-        const currBox  = el('div','period-box current');
 
-        function ratingRows(box, ratings, showPrior) {
-          if (!ratings) { box.innerHTML = '<div style="font-size:12px;color:var(--muted);font-style:italic">No data</div>'; return; }
-          ['Strong','OK','Needs work'].forEach(rating => {
-            const key = rating === 'Needs work' ? 'needsWork' : rating.toLowerCase();
-            const pct = ratings[key] || 0;
-            const barClass = rating === 'Strong' ? 'bar-strong' : rating === 'OK' ? 'bar-ok' : 'bar-needs';
-            const row = el('div','rating-row');
-            row.innerHTML = `
-              <span class="rating-lbl">${rating}</span>
-              <div class="bar-wrap"><div class="bar ${barClass}" style="width:${pct}%"></div></div>
-              <span class="pct-curr">${pct}%</span>`;
-            box.appendChild(row);
-          });
-        }
+        // Option C table: bar + Last · Prior + delta
+        const RATINGS = [
+          { label: 'Strong',     key: 'strong',    color: '#1d9e75' },
+          { label: 'OK',         key: 'ok',        color: '#2a78d6' },
+          { label: 'Needs work', key: 'needsWork', color: '#e24b4a' },
+        ];
 
-        priorBox.innerHTML = `<div class="period-label">Prior ${window} days</div>`;
-        ratingRows(priorBox, prior, false);
-        if (prior) priorBox.innerHTML += `<div class="n-label" style="font-size:10px;color:var(--muted);margin-top:4px">n = ${prior.n}</div>`;
+        const tbl = document.createElement('table');
+        tbl.style.cssText = 'width:100%;border-collapse:collapse;margin-bottom:6px';
 
-        currBox.innerHTML = `<div class="period-label current">Last ${window} days</div>`;
-        ratingRows(currBox, curr, true);
-        currBox.innerHTML += `<div class="n-label" style="font-size:10px;color:var(--muted);margin-top:4px">n = ${curr.n}</div>`;
+        // Header row
+        const thead = tbl.createTHead();
+        const hrow = thead.insertRow();
+        hrow.innerHTML = `
+          <th style="text-align:left;width:80px;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:0 0 6px;border-bottom:0.5px solid var(--border)"></th>
+          <th style="text-align:left;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:0 10px 6px 0;border-bottom:0.5px solid var(--border)"></th>
+          <th style="text-align:right;width:36px;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:0 0 6px;border-bottom:0.5px solid var(--border)">Last</th>
+          <th style="width:8px;padding:0 0 6px;border-bottom:0.5px solid var(--border)"></th>
+          <th style="text-align:right;width:36px;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:0 0 6px;border-bottom:0.5px solid var(--border)">Prior</th>
+          <th style="text-align:right;width:32px;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:0 0 6px;border-bottom:0.5px solid var(--border)">Δ</th>`;
 
-        cols.appendChild(priorBox);
-        cols.appendChild(currBox);
-        sessDiv.appendChild(cols);
+        const tbody = tbl.createTBody();
+        RATINGS.forEach(r => {
+          const cur_pct  = curr  ? (curr[r.key]  || 0) : 0;
+          const pri_pct  = prior ? (prior[r.key] || 0) : null;
+          const delta    = pri_pct !== null ? cur_pct - pri_pct : null;
+          const deltaStr = delta === null ? '—'
+                         : delta > 0  ? '+' + delta
+                         : delta < 0  ? '−' + Math.abs(delta)
+                         : '0';
+          const deltaColor = delta === null || delta === 0 ? 'var(--muted)'
+                           : r.key === 'needsWork'
+                             ? (delta > 0 ? 'var(--red,#a32d2d)' : '#0f6e56')
+                             : (delta > 0 ? '#0f6e56' : 'var(--red,#a32d2d)');
+          const tr = tbody.insertRow();
+          tr.style.borderBottom = '0.5px solid var(--border)';
+          tr.innerHTML = `
+            <td style="font-size:12px;color:var(--navy);padding:7px 10px 7px 0;vertical-align:middle">${r.label}</td>
+            <td style="padding:7px 10px 7px 0;vertical-align:middle">
+              <div style="height:7px;background:var(--lt,#f1f5f9);border-radius:4px;overflow:hidden">
+                <div style="height:100%;width:${cur_pct}%;background:${r.color};border-radius:4px"></div>
+              </div>
+            </td>
+            <td style="font-size:12px;font-weight:500;color:var(--navy);text-align:right;vertical-align:middle;font-variant-numeric:tabular-nums">${cur_pct}%</td>
+            <td style="font-size:11px;color:var(--muted);text-align:center;vertical-align:middle;padding:0 2px">·</td>
+            <td style="font-size:11px;color:var(--muted);text-align:right;vertical-align:middle;font-variant-numeric:tabular-nums">${pri_pct !== null ? pri_pct+'%' : '—'}</td>
+            <td style="font-size:11px;text-align:right;vertical-align:middle;color:${deltaColor};font-variant-numeric:tabular-nums">${deltaStr}</td>`;
+        });
+        // Remove bottom border from last row
+        tbody.lastElementChild.style.borderBottom = 'none';
 
-        // Trend
-        const currStrong  = curr  ? curr.strong  : null;
-        const priorStrong = prior ? prior.strong : null;
-        const trendDiv = el('div','trend-line');
-        trendDiv.innerHTML = `
-          <span class="trend-arrow">${trendArrow(currStrong, priorStrong)}</span>
-          <span class="trend-txt">Strong ratings</span>
-          <span class="trend-verdict ${trendClass(currStrong, priorStrong)}">${trendLabel(currStrong, priorStrong)}</span>`;
-        sessDiv.appendChild(trendDiv);
+        sessDiv.appendChild(tbl);
 
-        // Flags
+        const nLabel = el('div','n-label');
+        nLabel.style.cssText = 'font-size:10px;color:var(--muted);margin-bottom:8px';
+        nLabel.textContent = `n = ${curr.n} (last)${prior ? ' · n = '+prior.n+' (prior)' : ''}`;
+        sessDiv.appendChild(nLabel);
+
+        // Low volume note
         if (isLowData) {
           const lowNote = el('div','low-data-inline');
           lowNote.textContent = `Low volume: only ${curr.n} observation${curr.n>1?'s':''} in the last ${window} days — interpret with caution.`;
