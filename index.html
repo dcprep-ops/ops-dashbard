@@ -433,11 +433,6 @@ function renderDrills(data) {
     });
   });
 
-  const drillNotes = (data.lastDrills || []).flatMap(c => [
-    ...(c.evacNotes || []), ...(c.lockNotes || [])
-  ]);
-  const drillBtn = makeNotesBtn('Drills', () => drillNotes);
-  if (drillBtn) document.getElementById('drills-content').appendChild(drillBtn);
 }
 
 // ── RENDER ARRIVAL ─────────────────────────────────────────────────────────
@@ -562,11 +557,6 @@ function renderArrival(data, window) {
     container.appendChild(block);
   });
 
-  const arrNotes = data.flatMap(cl => [
-    ...(cl.arrival.notes || []), ...(cl.dismissal.notes || [])
-  ]);
-  const arrBtn = makeNotesBtn('Arrival & Dismissal', () => arrNotes);
-  if (arrBtn) document.getElementById('arrival-content').appendChild(arrBtn);
 }
 
 // ── RENDER CUSTODIAL ───────────────────────────────────────────────────────
@@ -678,9 +668,6 @@ function renderCustodial(data) {
     container.appendChild(nb);
   }
 
-  const custNotes = data.flatMap(cl => cl.notes || []);
-  const custBtn = makeNotesBtn('Custodial', () => custNotes);
-  if (custBtn) document.getElementById('custodial-content').appendChild(custBtn);
 }
 
 // ── LOAD DATA ──────────────────────────────────────────────────────────────
@@ -731,38 +718,17 @@ async function analyzeNotes(tabName, notes, btnEl, resultEl) {
   ).join('\n');
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const systemPrompt = `You analyze observation notes from a DC Prep school operations dashboard and return ONLY valid JSON, no markdown fences. The notes are from the "${tabName}" section. Return: {"highlights":["..."],"ideas":["..."]}. highlights=things going well or worth noting. ideas=things worth investigating or improving. Only include a section if notes support it. Max 4 bullets each. If notes are too thin, return {"highlights":[],"ideas":[]}.`;
+
+    const body = JSON.stringify({ view: 'analyze', system: systemPrompt, user: noteText });
+    const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: `You analyze observation notes from a DC Prep school operations dashboard and return ONLY valid JSON, no markdown fences.
-
-The notes are from the "${tabName}" section and cover the current observation window.
-
-Return this shape:
-{
-  "highlights": ["string", ...],
-  "ideas": ["string", ...]
-}
-
-highlights = things going well, positive patterns, or useful context worth surfacing
-ideas = things worth investigating, following up on, or improving
-
-Rules:
-- Only include a section if the notes genuinely support it — return [] if not
-- Do not manufacture insights that aren't in the notes
-- Keep each bullet concise (one sentence)
-- Do not just restate the notes — synthesize across them
-- Maximum 4 bullets per section
-- If the notes are too thin to synthesize meaningfully, return { "highlights": [], "ideas": [] }`,
-        messages: [{ role: 'user', content: noteText }]
-      })
+      headers: { 'Content-Type': 'text/plain' },
+      body
     });
-
-    const data = await res.json();
-    const raw = data.content[0].text.replace(/```json|```/g, '').trim();
+    const text = await res.text();
+    const data = JSON.parse(text);
+    const raw = (data.result || '{}').replace(/```json|```/g, '').trim();
     const result = JSON.parse(raw);
 
     const hasHighlights = result.highlights && result.highlights.length > 0;
