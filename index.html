@@ -527,11 +527,11 @@ function renderArrival(data, window) {
         sessDiv.appendChild(nLabel);
 
         if (sData.flags && sData.flags.length) {
-          const flagsTitle = el('div','flags-title', `Most flagged — ${label.toLowerCase()}, last ${window} days`);
+          const flagsTitle = el('div','flags-title','Improvement opportunities');
           sessDiv.appendChild(flagsTitle);
           sData.flags.forEach(f => {
             const row = el('div','flag-item');
-            row.innerHTML = `<span class="flag-name">${f.item}</span><span class="flag-pct">${f.rate}%</span>`;
+            row.innerHTML = `<span class="flag-name">${translateADFlag(f.item)}</span><span class="flag-pct">${f.rate}%</span>`;
             sessDiv.appendChild(row);
           });
         }
