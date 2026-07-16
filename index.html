@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DC Prep Ops Dashboard</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Ops Dashboard">
+<meta name="application-name" content="Ops Dashboard">
+<meta name="theme-color" content="#1a3a5c">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjMWEzYTVjIiByeD0iNiIvPjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgcng9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC45KSIvPjxyZWN0IHg9IjE4IiB5PSI0IiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHJ4PSIyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuOSkiLz48cmVjdCB4PSI0IiB5PSIxOCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiByeD0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjkpIi8+PHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHJ4PSIyIiBmaWxsPSIjMGQ5NDg4Ii8+PC9zdmc+">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Ops%20Dashboard%22%2C%22short_name%22%3A%22Ops%20Dashboard%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231a3a5c%22%2C%22theme_color%22%3A%22%231a3a5c%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22icon.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -31,15 +37,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 
 /* ── HOME SCREEN ── */
 .home-screen{max-width:900px;margin:0 auto;padding:28px 24px}
-.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
-.home-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px 18px;cursor:pointer;transition:border-color .15s;display:flex;flex-direction:column;gap:10px}
+.home-grid{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:540px){.home-grid{grid-template-columns:1fr 1fr}}
+.home-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .15s;display:flex;flex-direction:row;align-items:center;gap:12px}
 .home-card:hover{border-color:var(--teal)}
 .home-card:active{background:var(--lt)}
-.home-card-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.home-card-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .home-card-icon svg{display:block}
 .home-card-name{font-size:15px;font-weight:600;color:var(--navy)}
 .home-card-sub{font-size:12px;color:var(--muted);line-height:1.4;margin-top:2px}
-.home-card-arrow{font-size:18px;color:var(--teal);margin-top:auto;align-self:flex-end}
+.home-card-arrow{font-size:18px;color:var(--teal);margin-left:auto;flex-shrink:0}
 
 /* ── DETAIL SCREEN ── */
 .detail-screen{display:none;max-width:900px;margin:0 auto;padding:24px}
@@ -165,7 +171,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 
     <div class="home-card" onclick="showSection('custodial')">
       <div class="home-card-icon">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 10m0 2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z"/>
           <path d="M6 10v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4"/>
           <path d="M15 7h.01"/><path d="M18 9h.01"/><path d="M18 5h.01"/>
@@ -182,7 +188,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 
     <div class="home-card" onclick="showSection('drills')">
       <div class="home-card-icon">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
           <line x1="12" y1="9" x2="12" y2="13"/>
           <line x1="12" y1="17" x2="12.01" y2="17"/>
@@ -353,16 +359,14 @@ function renderDrills() {
     const comp = (OPS.drills?.compliance || []).find(d => d.campus === campus);
     const last = (OPS.drills?.lastDrills  || []).find(d => d.campus === campus);
 
-    html += `<div class="section">
-      <div class="drill-campus-label">${campus}</div>
-      <div class="drill-type-label">Evacuation</div>
+    html += `<div style="font-size:18px;font-weight:700;color:var(--navy);margin:20px 0 12px;padding-bottom:10px;border-bottom:1.5px solid var(--border)">${campus}</div>`;
+    html += `<div class="section"><div class="drill-type-label">Evacuation</div>
       <div class="month-row">${dots(comp?.evac)}</div>
       <div class="drill-type-label" style="margin-top:14px">Lockdown</div>
       <div class="month-row">${dots(comp?.lock)}</div>
     </div>`;
 
-    html += `<div class="section">
-      <div class="section-title">Most recent — ${campus}</div>`;
+    html += `<div class="section"><div class="section-title">Most recent drills</div>`;
     ['evac','lock'].forEach(type => {
       const drill = last?.[type];
       const label = type === 'evac' ? 'Evacuation' : 'Lockdown';
@@ -424,7 +428,8 @@ function renderArrival() {
   const con = document.getElementById('screen-arrival');
   let html = '';
   (OPS.arrival || []).forEach(cl => {
-    html += `<div class="section"><div class="cluster-label">${cl.cluster}</div>`;
+    html += `<div style="font-size:18px;font-weight:700;color:var(--navy);margin:20px 0 12px;padding-bottom:10px;border-bottom:1.5px solid var(--border)">${cl.cluster}</div>`;
+    html += `<div class="section">`;
     ['arrival','dismissal'].forEach(session => {
       const sData = cl[session], curr = sData?.current, prior = sData?.prior;
       const label = session === 'arrival' ? 'Arrival' : 'Dismissal';
@@ -458,7 +463,8 @@ function renderCustodial() {
     const pct = cl.currentPct, prev = cl.priorPct;
     const cw = cl.window || WIN;
     const pc = pct === null ? 'var(--muted)' : pct >= 80 ? 'var(--teal)' : pct >= 65 ? 'var(--amber)' : 'var(--red)';
-    html += `<div class="section"><div class="cluster-label">${cl.cluster}</div>`;
+    html += `<div style="font-size:18px;font-weight:700;color:var(--navy);margin:20px 0 12px;padding-bottom:10px;border-bottom:1.5px solid var(--border)">${cl.cluster}</div>`;
+    html += `<div class="section">`;
     html += `<div class="pct-big" style="color:${pc}">${pct !== null ? pct + '%' : '—'}</div>`;
     html += `<div style="font-size:11px;color:var(--muted);margin-top:4px">${cl.n > 0 ? 'Based on ' + cl.n + ' walkthrough' + (cl.n>1?'s':'') + ' in last ' + cw + ' days' : 'No walkthroughs in this period'}</div>`;
     if (prev !== null && pct !== null) {
@@ -504,32 +510,27 @@ function renderTransport() {
   let html = '';
   TRANSPORT.routes.forEach(route => {
     // Top metrics
-    html += `<div class="section">
-      <div class="route-header">${route.label}</div>
-      <div class="route-sub">${route.campuses || 'Edgewood'}</div>
-      <div class="metric-grid-3">
+    html += `<div style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--border)">${route.label}</div>`;
+    html += `<div class="section"><div class="metric-grid-3">
         <div class="metric-card"><div class="metric-label">Avg ridership</div><div class="metric-val">${route.avgRidership ?? '—'} <span style="font-size:13px;color:var(--muted)">of ${route.manifestSize ?? '—'}</span></div></div>
         <div class="metric-card"><div class="metric-label">Days logged</div><div class="metric-val">${route.daysLogged ?? '—'}%</div></div>
         <div class="metric-card"><div class="metric-label">Handoffs confirmed same day</div><div class="metric-val">${route.handoffsConfirmed ?? '—'}%</div></div>
       </div>
-
-      <div class="leg-grid">
-        <div class="leg-block">
-          <div class="leg-title">Morning · TNS → Edgewood</div>
-          <div class="leg-stats">
-            <div><div class="leg-stat-label">On-time dep.</div><div class="leg-stat-val">${route.am?.onTime ?? '—'}%</div></div>
-            <div><div class="leg-stat-label">Median time</div><div class="leg-stat-val">${route.am?.median ?? '—'} min</div></div>
-            <div><div class="leg-stat-label">90% under</div><div class="leg-stat-val">${route.am?.p90 ?? '—'} min</div></div>
-          </div>
-        </div>
-        <div class="leg-block">
-          <div class="leg-title">Afternoon · Edgewood → TNS</div>
-          <div class="leg-stats">
-            <div><div class="leg-stat-label">On-time dep.</div><div class="leg-stat-val">${route.pm?.onTime ?? '—'}%</div></div>
-            <div><div class="leg-stat-label">Median time</div><div class="leg-stat-val">${route.pm?.median ?? '—'} min</div></div>
-            <div><div class="leg-stat-label">90% under</div><div class="leg-stat-val">${route.pm?.p90 ?? '—'} min</div></div>
-          </div>
-        </div>
+    </div>`;
+    html += `<div class="section">
+      <div class="section-title">Morning · TNS → Edgewood</div>
+      <div class="metric-grid-3">
+        <div class="metric-card"><div class="metric-label">On-time departure</div><div class="metric-val">${route.am?.onTime ?? '—'}%</div></div>
+        <div class="metric-card"><div class="metric-label">Median trip time</div><div class="metric-val">${route.am?.median ?? '—'} min</div></div>
+        <div class="metric-card"><div class="metric-label">90% of trips under</div><div class="metric-val">${route.am?.p90 ?? '—'} min</div></div>
+      </div>
+    </div>`;
+    html += `<div class="section">
+      <div class="section-title">Afternoon · Edgewood → TNS</div>
+      <div class="metric-grid-3">
+        <div class="metric-card"><div class="metric-label">On-time departure</div><div class="metric-val">${route.pm?.onTime ?? '—'}%</div></div>
+        <div class="metric-card"><div class="metric-label">Median trip time</div><div class="metric-val">${route.pm?.median ?? '—'} min</div></div>
+        <div class="metric-card"><div class="metric-label">90% of trips under</div><div class="metric-val">${route.pm?.p90 ?? '—'} min</div></div>
       </div>
     </div>`;
 
