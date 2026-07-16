@@ -107,6 +107,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .badge-stable{background:var(--lt);color:var(--muted);font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;margin-left:6px}
 
 /* ── TRANSPORTATION ── */
+.metric-table{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto auto;gap:0 8px}
+.metric-lbl{font-size:11px;color:var(--muted);line-height:1.35;align-self:end;padding-bottom:5px}
+.metric-val-t{font-size:20px;font-weight:700;color:var(--navy);align-self:start}
 .route-header{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px}
 .route-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
 .metric-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
@@ -511,28 +514,34 @@ function renderTransport() {
   TRANSPORT.routes.forEach(route => {
     // Top metrics
     html += `<div style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--border)">${route.label}</div>`;
-    html += `<div class="section"><div class="metric-grid-3">
-        <div class="metric-card"><div class="metric-label">Avg ridership</div><div class="metric-val">${route.avgRidership ?? '—'} <span style="font-size:13px;color:var(--muted)">of ${route.manifestSize ?? '—'}</span></div></div>
-        <div class="metric-card"><div class="metric-label">Days logged</div><div class="metric-val">${route.daysLogged ?? '—'}%</div></div>
-        <div class="metric-card"><div class="metric-label">Handoffs confirmed same day</div><div class="metric-val">${route.handoffsConfirmed ?? '—'}%</div></div>
-      </div>
-    </div>`;
-    html += `<div class="section">
-      <div class="section-title">Morning · TNS → Edgewood</div>
-      <div class="metric-grid-3">
-        <div class="metric-card"><div class="metric-label">On-time departure</div><div class="metric-val">${route.am?.onTime ?? '—'}%</div></div>
-        <div class="metric-card"><div class="metric-label">Median trip time</div><div class="metric-val">${route.am?.median ?? '—'} min</div></div>
-        <div class="metric-card"><div class="metric-label">90% of trips under</div><div class="metric-val">${route.am?.p90 ?? '—'} min</div></div>
-      </div>
-    </div>`;
-    html += `<div class="section">
-      <div class="section-title">Afternoon · Edgewood → TNS</div>
-      <div class="metric-grid-3">
-        <div class="metric-card"><div class="metric-label">On-time departure</div><div class="metric-val">${route.pm?.onTime ?? '—'}%</div></div>
-        <div class="metric-card"><div class="metric-label">Median trip time</div><div class="metric-val">${route.pm?.median ?? '—'} min</div></div>
-        <div class="metric-card"><div class="metric-label">90% of trips under</div><div class="metric-val">${route.pm?.p90 ?? '—'} min</div></div>
-      </div>
-    </div>`;
+     html += `<div class="section"><div class="metric-table">
+         <div class="metric-lbl">Avg ridership</div>
+         <div class="metric-lbl">Days logged</div>
+         <div class="metric-lbl">Handoffs confirmed same day</div>
+         <div class="metric-val-t">${route.avgRidership ?? '—'} <span style="font-size:13px;font-weight:500;color:var(--muted)">of ${route.manifestSize ?? '—'}</span></div>
+         <div class="metric-val-t">${route.daysLogged ?? '—'}%</div>
+         <div class="metric-val-t">${route.handoffsConfirmed ?? '—'}%</div>
+       </div></div>`;
+     html += `<div class="section">
+       <div class="section-title">Morning · TNS → Edgewood</div>
+       <div class="metric-table">
+         <div class="metric-lbl">On-time departure</div>
+         <div class="metric-lbl">Median trip time</div>
+         <div class="metric-lbl">90% of trips under</div>
+         <div class="metric-val-t">${route.am?.onTime ?? '—'}%</div>
+         <div class="metric-val-t">${route.am?.median ?? '—'} min</div>
+         <div class="metric-val-t">${route.am?.p90 ?? '—'} min</div>
+       </div></div>`;
+     html += `<div class="section">
+       <div class="section-title">Afternoon · Edgewood → TNS</div>
+       <div class="metric-table">
+         <div class="metric-lbl">On-time departure</div>
+         <div class="metric-lbl">Median trip time</div>
+         <div class="metric-lbl">90% of trips under</div>
+         <div class="metric-val-t">${route.pm?.onTime ?? '—'}%</div>
+         <div class="metric-val-t">${route.pm?.median ?? '—'} min</div>
+         <div class="metric-val-t">${route.pm?.p90 ?? '—'} min</div>
+       </div></div>`;
 
     // On-time arrival trend chart
     html += `<div class="section">
